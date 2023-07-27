@@ -107,10 +107,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun createAccountPageActivity(map: Map<String, String>) {
         val intent = Intent(this@RegisterActivity, AccountPageActivity::class.java)
-        intent.putExtra("first_name",map.get("first_name"))
-        intent.putExtra("last_name",map.get("last_name"))
-        intent.putExtra("email",map.get("email"))
-        intent.putExtra("phone",map.get("phone"))
+        intent.putExtra("first_name", map["first_name"])
+        intent.putExtra("last_name", map["last_name"])
+        intent.putExtra("email", map["email"])
+        intent.putExtra("phone", map["phone"])
         startActivity(intent)
 
     }

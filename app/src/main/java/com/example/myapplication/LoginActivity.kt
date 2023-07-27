@@ -45,11 +45,16 @@ class LoginActivity : AppCompatActivity() {
     private fun signIn(token:String) {
         api.checkTokenForLogin(KEY, token).enqueue(object : Callback<UserDataInfo> {
             override fun onResponse(
-                call: Call<UserDataInfo>, response: Response<UserDataInfo>) {
-                if (response.isSuccessful){
-                    createAccountPageActivity(response.body()!!.userDataModel!!.first_name,response.body()!!.userDataModel!!.last_name,response.body()!!.userDataModel!!.email,response.body()!!.userDataModel!!.phone, response.body()!!.userDataModel.image)
-                }else println("Error")
-            }
+                call: Call<UserDataInfo>, response: Response<UserDataInfo>) =
+                if (response.isSuccessful) {
+                    createAccountPageActivity(response.body()!!.userDataModel.first_name,
+                        response.body()!!.userDataModel.last_name,
+                        response.body()!!.userDataModel.email,
+                        response.body()!!.userDataModel.phone,
+                        response.body()!!.userDataModel.image)
+                } else {
+                    println("Error")
+                }
 
             override fun onFailure(call: Call<UserDataInfo>, t: Throwable) {
                 println(t.message)
@@ -106,11 +111,9 @@ class LoginActivity : AppCompatActivity() {
         api.getColors(KEY).enqueue(object : Callback<ColorsGet?> {
             override fun onResponse(call: Call<ColorsGet?>, response: Response<ColorsGet?>) {
                 for (x in 0 until response.body()!!.allColors.size) {
-                    colorList.put(
-                        response.body()!!.allColors[x].name, response.body()!!.allColors[x].value
-                    )
+                    colorList[response.body()!!.allColors[x].name] = response.body()!!.allColors[x].value
                 }
-                val colorBg = "#${colorList.get("accentMain").toString()}"
+                val colorBg = "#${colorList["accentMain"].toString()}"
                 bindingClass.mainActivityConstraint.setBackgroundColor(colorBg.toColorInt())
             }
 
@@ -124,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
                 call: Call<GetIconFromDirectory>, response: Response<GetIconFromDirectory>
             ) {
                 if (response.isSuccessful) {
-                    var iconUrl: String = IMG_BASE_URL + response.body()?.icons?.icon
+                    val iconUrl: String = IMG_BASE_URL + response.body()?.icons?.icon
                     Glide.with(this@LoginActivity).load(iconUrl).into(bindingClass.icon)
                     bindingClass.mainActivityConstraint.isVisible = true
                 }

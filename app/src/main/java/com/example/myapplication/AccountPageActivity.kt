@@ -6,9 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -22,7 +20,7 @@ import com.example.myapplication.model.UserDataModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,7 +32,7 @@ class AccountPageActivity : AppCompatActivity() {
     private lateinit var email: String
     private var token: String? = null
     private var image: String? = null
-    var uri: Uri? = null
+    private var uri: Uri? = null
     var path: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +72,6 @@ class AccountPageActivity : AppCompatActivity() {
         }
     }
 
-
     @SuppressLint("SetTextI18n")
     private fun getUserInfoFromActivity() {
         bindingClass.firstName.setText(intent.getStringExtra("first_name"))
@@ -82,7 +79,7 @@ class AccountPageActivity : AppCompatActivity() {
         bindingClass.phone.setText(intent.getStringExtra("phone"))
         email = intent.getStringExtra("email").toString()
         bindingClass.email.setText(email)
-        bindingClass.changeUserDataBtn.setText("Change")
+        bindingClass.changeUserDataBtn.text = "Change"
         bindingClass.savePng.isVisible = false
         image = intent.getStringExtra("image")
         if (!image.isNullOrEmpty()){
@@ -111,7 +108,7 @@ class AccountPageActivity : AppCompatActivity() {
                 .show()
         } else {
             val password: String = bindingClass.submitEdit.text.toString()
-            api.loginUser(KEY, email.toString(), password.toString())
+            api.loginUser(KEY, email, password)
                 .enqueue(object : Callback<UserDataModel> {
                     override fun onResponse(
                         call: Call<UserDataModel>, response: Response<UserDataModel>
@@ -172,7 +169,7 @@ class AccountPageActivity : AppCompatActivity() {
         launcher.launch(intent)
     }
 
-    var launcher = registerForActivityResult<Intent, ActivityResult>(
+    private var launcher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -182,14 +179,15 @@ class AccountPageActivity : AppCompatActivity() {
             path = RealPathUtil.getRealPath(context, uri)
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                bindingClass.accountImg.setImageBitmap(bitmap)
-                bindingClass.savePng.setVisibility(View.VISIBLE)
+                bindingClass.accountImg.setImageBitmap(/* bm = */ bitmap)
+                bindingClass.savePng.isVisible = true
             } catch (e: IOException) {
                 e.printStackTrace()
             }
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
@@ -200,9 +198,9 @@ class AccountPageActivity : AppCompatActivity() {
     }
 
     private fun uploadImage() {
-        val f = File(path)
+        val f = File(path!!)
         val reqFile =
-            RequestBody.create(contentResolver.getType(uri!!)?.let { it.toMediaTypeOrNull() }, f)
+            f.asRequestBody(contentResolver.getType(uri!!)?.toMediaTypeOrNull())
         val body: MultipartBody.Part = createFormData("file", f.name, reqFile)
         val call = api.upload(KEY, token, body)
         call!!.enqueue(object : Callback<UserDataModel?> {
