@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Register And Login</string>
+    <string name="english">English</string>
+    <string name="skip">Skip</string>
+    <string name="email">Email</string>
+    <string name="password">password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Login</string>
+    <string name="register">register</string>
+</resources>
