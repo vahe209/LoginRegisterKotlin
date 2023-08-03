@@ -1,4 +1,4 @@
-package com.example.myapplication.PathUtil;
+package com.example.myapplication.pathUtil;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;

@@ -1,4 +1,4 @@
-package com.example.myapplication.Colors
+package com.example.myapplication.data
 
 import com.google.gson.annotations.SerializedName
 

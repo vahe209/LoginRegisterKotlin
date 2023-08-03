@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AccountPageActivity">
+    tools:context=".view.AccountPageActivity">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll"
@@ -98,8 +98,16 @@
                     app:layout_constraintEnd_toEndOf="@id/imgLoaderLayout"
                    app:layout_constraintStart_toStartOf="@id/imgLoaderLayout"
                     app:layout_constraintTop_toBottomOf="@id/imgLoaderLayout"
-
                    />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/log_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/log_out"
+                    app:layout_constraintTop_toTopOf="@id/save_png"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintBottom_toBottomOf="@id/save_png"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
